@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.presentation.newsnavigation.detailscreen.DetailScreenViewModel
 
 @Composable
-fun DetailScreen(modifier: Modifier = Modifier, url: String , navigateUp: ()-> Unit, viewModel: DetailScreenViewModel = hiltViewModel()) {
+fun DetailScreen(modifier: Modifier = Modifier, url: String , viewModel: DetailScreenViewModel = hiltViewModel(),  navigateUp: ()-> Unit) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {

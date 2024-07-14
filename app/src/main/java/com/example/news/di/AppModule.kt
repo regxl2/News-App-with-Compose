@@ -54,10 +54,9 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun getNewsDatabase(@ApplicationContext context: Context, converters: Converters): RoomDatabase{
+    fun getNewsDatabase(@ApplicationContext context: Context): NewsDatabase{
         return Room.databaseBuilder(context = context, klass = NewsDatabase::class.java, name = "NewsArticleDatabase")
             .fallbackToDestructiveMigration()
-            .addTypeConverter(converters)
             .build()
     }
 
