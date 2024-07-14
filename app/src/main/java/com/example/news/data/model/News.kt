@@ -1,6 +1,4 @@
-package com.example.news.data.database
-
-import com.example.news.domain.model.Article
+package com.example.news.data.model
 
 data class News(
     val articles: List<Article>,

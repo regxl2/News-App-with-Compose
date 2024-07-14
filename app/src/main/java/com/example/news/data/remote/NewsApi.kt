@@ -1,6 +1,6 @@
 package com.example.news.data.remote
 
-import com.example.news.data.database.News
+import com.example.news.data.model.News
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -15,7 +15,7 @@ interface NewsApi {
 
     @GET("everything")
     suspend fun searchNews(
-        @Query("searchQuery") searchQuery: String,
+        @Query("q") searchQuery: String,
         @Query("page") page: Int,
         @Query("sources") sources: String,
         @Query("apiKey") apiKey: String

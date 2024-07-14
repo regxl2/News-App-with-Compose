@@ -4,21 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.news.domain.model.Article
-import com.example.news.domain.usecases.getnewsusecase.GetNewsUseCase
+import com.example.news.data.repositories.newsrepository.NewsRepository
+import com.example.news.data.model.Article
+import com.example.news.util.Util
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsScreenViewModel @Inject constructor(getNews: GetNewsUseCase) : ViewModel() {
+class NewsScreenViewModel @Inject constructor(newsRepository: NewsRepository) : ViewModel() {
     var articles: MutableStateFlow<PagingData<Article>> = MutableStateFlow(PagingData.empty())
         private set
 
     init {
         viewModelScope.launch {
-            getNews(listOf("bbc-news", "abc-news", "al-jazeera-english")).cachedIn(viewModelScope).collect {
+            newsRepository.getNews(sources = Util.sources).cachedIn(viewModelScope).collect {
                 articles.value = it
             }
         }

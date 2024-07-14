@@ -1,7 +1,5 @@
 package com.example.news.presentation.newsnavigation.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,16 +27,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.news.domain.model.Article
-import com.example.news.domain.model.Source
+import com.example.news.data.model.Article
+import com.example.news.data.model.Source
 import com.example.news.util.Util
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
-fun ArticleCard(modifier: Modifier = Modifier, article: Article) {
+fun ArticleCard(modifier: Modifier = Modifier, article: Article, navigateToDetailScreen: (url: String)->Unit) {
     Card(modifier = modifier
         .padding(8.dp)
-        .fillMaxWidth(), onClick = { /*TODO*/ }, elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+        .fillMaxWidth(), onClick = { navigateToDetailScreen(article.url) }, elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -81,7 +79,6 @@ fun DetailsText(modifier: Modifier = Modifier, source: String, title: String, de
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PublishAtText(modifier: Modifier = Modifier, publishedAt: String, contentLength: Int) {
     Row(
@@ -100,7 +97,6 @@ fun PublishAtText(modifier: Modifier = Modifier, publishedAt: String, contentLen
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun PreviewArticleCard() {
@@ -115,5 +111,7 @@ private fun PreviewArticleCard() {
             publishedAt = "2024-07-07T14:09:34Z",
             content = "India vs Zimbabwe 2nd T20I Highlights: Abhishek Sharma starred with a historic century in India's dominating 100-run win over Zimbabwe in the second T20I in Harare on Sunday. Abhishek scored 100 off … [+991 chars]"
         )
+        ,
+        navigateToDetailScreen = {}
     )
 }

@@ -10,7 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.news.domain.model.Article
+import com.example.news.data.model.Article
 import com.example.news.presentation.newsnavigation.components.ArticleCard
 import com.example.news.presentation.newsnavigation.components.ErrorScreen
 import com.example.news.presentation.newsnavigation.components.LoadingScreen
@@ -20,12 +20,18 @@ import com.example.news.presentation.newsnavigation.components.handleErrorAndLoa
 @Composable
 fun NewsScreen(
     modifier: Modifier = Modifier,
-    viewModel: NewsScreenViewModel = hiltViewModel()
+    viewModel: NewsScreenViewModel = hiltViewModel(),
+    navigateToDetailScreen: (url: String) -> Unit
 ) {
     val articles = viewModel.articles.collectAsLazyPagingItems()
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(articles.itemCount) { articleIndex ->
-            articles[articleIndex]?.let { article -> ArticleCard(article = article) }
+            articles[articleIndex]?.let { article ->
+                ArticleCard(
+                    article = article,
+                    navigateToDetailScreen = navigateToDetailScreen
+                )
+            }
         }
         handleErrorAndLoading(articles = articles)
     }

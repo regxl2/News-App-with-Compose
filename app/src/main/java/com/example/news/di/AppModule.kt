@@ -1,15 +1,15 @@
 package com.example.news.di
 
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.news.data.database.NewsDao
+import com.example.news.data.database.NewsDatabase
+import com.example.news.data.model.Converters
 import com.example.news.data.remote.NewsApi
 import com.example.news.data.repositories.localusermanager.LocalUserManager
 import com.example.news.data.repositories.localusermanager.LocalUserManagerImpl
-import com.example.news.data.repositories.newsrepository.NewsRepository
-import com.example.news.data.repositories.newsrepository.NewsRepositoryImpl
-import com.example.news.domain.usecases.getnewsusecase.GetNewsUseCase
-import com.example.news.domain.usecases.onboardingusecase.OnBoardingUseCase
-import com.example.news.domain.usecases.onboardingusecase.ReadOnBoardingState
-import com.example.news.domain.usecases.onboardingusecase.SaveOnBoardingState
 import com.example.news.util.Util
 import dagger.Module
 import dagger.Provides
@@ -23,20 +23,20 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
-
     @Singleton
     @Provides
     fun provideLocalUserManager(@ApplicationContext context: Context): LocalUserManager {
         return LocalUserManagerImpl(context);
+
     }
 
-    @Singleton
+    @Apikey
     @Provides
-    fun provideOnBoardingUseCase(
-        saveOnBoardingState: SaveOnBoardingState,
-        readOnBoardingState: ReadOnBoardingState
-    ): OnBoardingUseCase {
-        return OnBoardingUseCase(saveOnBoardingState, readOnBoardingState)
+    fun getApikey(@ApplicationContext context: Context): String {
+        return context.packageManager.getApplicationInfo(
+            context.packageName,
+            PackageManager.GET_META_DATA
+        ).metaData.getString("API_KEY", "")
     }
 
     @Singleton
@@ -54,14 +54,17 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun getNewsRepository(newsApi: NewsApi, @ApplicationContext context: Context): NewsRepository {
-        return NewsRepositoryImpl(newsApi, context)
+    fun getNewsDatabase(@ApplicationContext context: Context, converters: Converters): RoomDatabase{
+        return Room.databaseBuilder(context = context, klass = NewsDatabase::class.java, name = "NewsArticleDatabase")
+            .fallbackToDestructiveMigration()
+            .addTypeConverter(converters)
+            .build()
     }
 
     @Singleton
     @Provides
-    fun getNews(newsRepository: NewsRepository): GetNewsUseCase{
-        return GetNewsUseCase(newsRepository)
+    fun getNewsDao(newsDatabase: NewsDatabase): NewsDao{
+        return newsDatabase.getNewsDao()
     }
 
 }
