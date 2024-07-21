@@ -5,9 +5,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.news.data.model.Article
+import com.example.news.data.model.SavedArticle
 
-fun LazyListScope.handleErrorAndLoading(articles: LazyPagingItems<Article>){
+fun LazyListScope.handleErrorAndLoading(articles: LazyPagingItems<SavedArticle>){
     articles.apply {
         when {
             loadState.refresh is LoadState.Loading -> {

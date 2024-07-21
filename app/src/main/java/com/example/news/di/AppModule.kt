@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.news.data.database.NewsDao
 import com.example.news.data.database.NewsDatabase
-import com.example.news.data.model.Converters
 import com.example.news.data.remote.NewsApi
 import com.example.news.data.repositories.localusermanager.LocalUserManager
 import com.example.news.data.repositories.localusermanager.LocalUserManagerImpl

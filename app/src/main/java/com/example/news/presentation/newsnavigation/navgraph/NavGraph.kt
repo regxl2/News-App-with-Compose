@@ -1,3 +1,4 @@
+import android.os.Build
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -5,15 +6,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.news.data.model.SavedArticle
 import com.example.news.presentation.newsnavigation.bookmarkscreen.BookmarkScreen
 import com.example.news.presentation.newsnavigation.newsscreen.NewsScreen
 import com.example.news.presentation.newsnavigation.searchscreen.SearchScreen
+import com.example.news.presentation.rootnavgraph.DetailScreenNavType
 import com.example.news.presentation.rootnavgraph.Route
 import com.example.news.util.Util
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostController) {
@@ -29,9 +33,9 @@ fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostC
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
-            ) { url ->
-                val encodedUrl = Util.encodeUrl(url)
-                navController.navigate(route = "${Route.NewsNavigation.DetailScreen.name}/${encodedUrl}")
+            ) { article ->
+                val encodedArticle = Json.encodeToString(article.copy(url = Util.encodeUrl(article.url), urlToImage = Util.encodeUrl(article.urlToImage)))
+                navController.navigate(route = "${Route.NewsNavigation.DetailScreen.name}/${encodedArticle}")
             }
         }
         composable(route = Route.NewsNavigation.SearchScreen.name,
@@ -40,19 +44,26 @@ fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostC
             }) {
             SearchScreen(modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()) { url ->
-                val encodedUrl = Util.encodeUrl(url)
-                navController.navigate(route = "${Route.NewsNavigation.DetailScreen.name}/${encodedUrl}")
+                .fillMaxSize()) { article ->
+                val encodedArticle = Json.encodeToString(article.copy(url = Util.encodeUrl(article.url), urlToImage = Util.encodeUrl(article.urlToImage)))
+                navController.navigate(route = "${Route.NewsNavigation.DetailScreen.name}/${encodedArticle}")
             }
         }
-        composable(route = Route.NewsNavigation.DetailScreenWithUrl.name,
-            arguments = listOf(navArgument(name = "url") { type = NavType.StringType }),
+        composable(route = Route.NewsNavigation.DetailScreenWithArticle.name,
+            arguments = listOf(navArgument(name = "article") { type = DetailScreenNavType }),
             enterTransition = { slideInHorizontally() }
         ) { backStackEntry ->
-            val encodedUrl = backStackEntry.arguments?.getString("url")
-            val url = encodedUrl?.let { Util.decodeUrl(it) }
-            url?.let {
-                DetailScreen(modifier = Modifier.fillMaxSize(), url = it) {
+            val encodedArticle = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            {
+                backStackEntry.arguments?.getParcelable("article", SavedArticle::class.java)
+            }
+            else {
+                @Suppress("DEPRECATION")
+                backStackEntry.arguments?.getParcelable("article")
+            }
+            val decodedArticle = encodedArticle?.let { it.copy(url = Util.decodeUrl(it.url), urlToImage = Util.decodeUrl(it.urlToImage)) }
+            decodedArticle?.let {
+                DetailScreen(modifier = Modifier.fillMaxSize(), article = it) {
                     navController.navigateUp()
                 }
             }

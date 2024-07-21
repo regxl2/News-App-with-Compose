@@ -92,5 +92,5 @@ fun NewsBottomBar(modifier: Modifier = Modifier, currentDestination: NavDestinat
 
 
 fun isNotDetailScreen (currentDestination: NavDestination?):Boolean{
-    return currentDestination?.hierarchy?.any { it.route == Route.NewsNavigation.DetailScreenWithUrl.name} == false
+    return currentDestination?.hierarchy?.any { it.route == Route.NewsNavigation.DetailScreenWithArticle.name} == false
 }

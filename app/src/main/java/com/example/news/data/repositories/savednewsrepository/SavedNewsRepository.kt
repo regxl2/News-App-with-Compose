@@ -1,12 +1,12 @@
 package com.example.news.data.repositories.savednewsrepository
 
-import com.example.news.data.model.Article
+import com.example.news.data.model.SavedArticle
 import kotlinx.coroutines.flow.Flow
 
 interface SavedNewsRepository {
-    suspend fun insertArticle(article: Article)
+    suspend fun insertArticle(article: SavedArticle)
 
-    suspend fun deleteArticle(article: Article)
+    suspend fun deleteArticle(article: SavedArticle)
 
-    fun getAllArticles(): Flow<List<Article>>
+    fun getAllArticles(): Flow<List<SavedArticle>>
 }

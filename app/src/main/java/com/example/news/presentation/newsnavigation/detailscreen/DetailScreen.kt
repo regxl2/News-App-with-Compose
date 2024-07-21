@@ -17,20 +17,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.news.data.model.SavedArticle
 import com.example.news.presentation.newsnavigation.detailscreen.DetailScreenViewModel
+import com.example.news.util.Util
 
 @Composable
-fun DetailScreen(modifier: Modifier = Modifier, url: String , viewModel: DetailScreenViewModel = hiltViewModel(),  navigateUp: ()-> Unit) {
+fun DetailScreen(modifier: Modifier = Modifier, article: SavedArticle , viewModel: DetailScreenViewModel = hiltViewModel(),  navigateUp: ()-> Unit) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             DetailTopBar(modifier = Modifier.fillMaxWidth(), navigateUp = navigateUp){
-
+                viewModel.saveArticle(article)
             }
         }) { paddingValues ->
         WebViewCompose(modifier = Modifier
             .padding(paddingValues)
-            .fillMaxSize(), url = url)
+            .fillMaxSize(), url =  article.url)
     }
 }
 
@@ -77,5 +79,5 @@ fun WebViewCompose(modifier: Modifier = Modifier, url: String) {
 @Preview
 @Composable
 private fun PreviewDetailScreen() {
-    DetailScreen(modifier = Modifier.fillMaxSize(), url = " ", navigateUp = {})
+    DetailScreen(modifier = Modifier.fillMaxSize(), article = Util.article, navigateUp = {})
 }

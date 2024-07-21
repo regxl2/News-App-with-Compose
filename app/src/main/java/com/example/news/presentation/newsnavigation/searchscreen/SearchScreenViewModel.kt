@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
+import com.example.news.data.model.Article
 import com.example.news.data.repositories.newsrepository.NewsRepository
 import com.example.news.util.Util
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -28,7 +31,12 @@ class SearchScreenViewModel @Inject constructor(private val newsRepository: News
         .debounce(1000)
         .filter { it.isNotEmpty() || it.isNotBlank() }
         .flatMapLatest { query ->
-            newsRepository.getSearchNews(searchQuery = query, sources = Util.sources).catch {
+            newsRepository.getSearchNews(searchQuery = query, sources = Util.sources)
+                .map {
+                    value: PagingData<Article> ->
+                    value.map { article -> Util.articleToSavedArticle(article) }
+                }
+                .catch {
                 emit(
                     PagingData.empty()
                 )

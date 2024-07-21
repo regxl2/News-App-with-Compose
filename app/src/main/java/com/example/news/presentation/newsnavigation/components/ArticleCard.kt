@@ -27,16 +27,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.news.data.model.Article
-import com.example.news.data.model.Source
+import com.example.news.data.model.SavedArticle
 import com.example.news.util.Util
 
 
 @Composable
-fun ArticleCard(modifier: Modifier = Modifier, article: Article, navigateToDetailScreen: (url: String)->Unit) {
+fun ArticleCard(modifier: Modifier = Modifier, article: SavedArticle, navigateToDetailScreen: (article: SavedArticle)->Unit) {
     Card(modifier = modifier
         .padding(8.dp)
-        .fillMaxWidth(), onClick = { navigateToDetailScreen(article.url) }, elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+        .fillMaxWidth(), onClick = { navigateToDetailScreen(article) }, elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -48,7 +47,7 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, navigateToDetai
             ) {
                 DetailsText(
                     modifier = Modifier.weight(0.6f),
-                    source = article.source.name,
+                    source = article.sourceName,
                     title = article.title,
                     description = article.description
                 )
@@ -101,17 +100,7 @@ fun PublishAtText(modifier: Modifier = Modifier, publishedAt: String, contentLen
 @Composable
 private fun PreviewArticleCard() {
     ArticleCard(
-        article = Article(
-            source = Source(id = "null", "NDTV News"),
-            author = "NDTV Sports Desk",
-            title = "India vs Zimbabwe Live Score, 2nd T20I: After Abhishek Sharma's Historic Ton, India Close In On Win - NDTV Sports",
-            description = "India vs Zimbabwe 2nd T20I Highlights: Abhishek Sharma's 100 off 47 helped India register a 100-run victory over Zimbabwe on Sunday.",
-            url = "https://sports.ndtv.com/cricket/india-vs-zimbabwe-live-score-2nd-t20-match-7-july-ind-vs-zim-latest-scorecard-shubman-gill-sikandar-raza-6052501",
-            urlToImage = "https://c.ndtvimg.com/2024-07/uu2u73kg_india-bcci-x_625x300_07_July_24.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=738",
-            publishedAt = "2024-07-07T14:09:34Z",
-            content = "India vs Zimbabwe 2nd T20I Highlights: Abhishek Sharma starred with a historic century in India's dominating 100-run win over Zimbabwe in the second T20I in Harare on Sunday. Abhishek scored 100 off … [+991 chars]"
-        )
-        ,
+        article = Util.article,
         navigateToDetailScreen = {}
     )
 }
