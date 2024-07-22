@@ -11,8 +11,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
@@ -20,16 +24,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.news.data.model.SavedArticle
 import com.example.news.presentation.newsnavigation.detailscreen.DetailScreenViewModel
 import com.example.news.util.Util
+import kotlinx.coroutines.launch
 
 @Composable
 fun DetailScreen(modifier: Modifier = Modifier, article: SavedArticle , viewModel: DetailScreenViewModel = hiltViewModel(),  navigateUp: ()-> Unit) {
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember{ SnackbarHostState() }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             DetailTopBar(modifier = Modifier.fillMaxWidth(), navigateUp = navigateUp){
                 viewModel.saveArticle(article)
+                scope.launch {
+                    snackBarHostState.showSnackbar("Article saved successfully")
+                }
             }
-        }) { paddingValues ->
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        }
+    ) { paddingValues ->
         WebViewCompose(modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize(), url =  article.url)

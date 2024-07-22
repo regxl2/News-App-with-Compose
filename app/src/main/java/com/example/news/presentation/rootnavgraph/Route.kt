@@ -4,8 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.navigation.NavType
 import com.example.news.data.model.SavedArticle
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
 
 sealed class Route(val name: String){
     data object OnBoardingScreen: Route(name = "onBoardingScreen")
@@ -34,11 +33,7 @@ val DetailScreenNavType = object: NavType<SavedArticle>(isNullableAllowed = fals
     }
 
     override fun parseValue(value: String): SavedArticle {
-        return Json.decodeFromString(value)
-    }
-
-    override fun serializeAsValue(value: SavedArticle): String {
-        return Json.encodeToString(value = value)
+        return Gson().fromJson(value, SavedArticle::class.java)
     }
 
 }

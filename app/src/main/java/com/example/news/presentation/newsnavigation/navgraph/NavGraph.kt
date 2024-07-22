@@ -1,3 +1,4 @@
+import android.net.Uri
 import android.os.Build
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,9 +16,7 @@ import com.example.news.presentation.newsnavigation.newsscreen.NewsScreen
 import com.example.news.presentation.newsnavigation.searchscreen.SearchScreen
 import com.example.news.presentation.rootnavgraph.DetailScreenNavType
 import com.example.news.presentation.rootnavgraph.Route
-import com.example.news.util.Util
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
 
 @Composable
 fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostController) {
@@ -34,7 +33,7 @@ fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostC
                     .padding(paddingValues)
                     .fillMaxSize()
             ) { article ->
-                val encodedArticle = Json.encodeToString(article.copy(url = Util.encodeUrl(article.url), urlToImage = Util.encodeUrl(article.urlToImage)))
+                val encodedArticle = Uri.encode(Gson().toJson(article))
                 navController.navigate(route = "${Route.NewsNavigation.DetailScreen.name}/${encodedArticle}")
             }
         }
@@ -45,7 +44,7 @@ fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostC
             SearchScreen(modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()) { article ->
-                val encodedArticle = Json.encodeToString(article.copy(url = Util.encodeUrl(article.url), urlToImage = Util.encodeUrl(article.urlToImage)))
+                val encodedArticle = Uri.encode(Gson().toJson(article))
                 navController.navigate(route = "${Route.NewsNavigation.DetailScreen.name}/${encodedArticle}")
             }
         }
@@ -61,8 +60,7 @@ fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostC
                 @Suppress("DEPRECATION")
                 backStackEntry.arguments?.getParcelable("article")
             }
-            val decodedArticle = encodedArticle?.let { it.copy(url = Util.decodeUrl(it.url), urlToImage = Util.decodeUrl(it.urlToImage)) }
-            decodedArticle?.let {
+            encodedArticle?.let {
                 DetailScreen(modifier = Modifier.fillMaxSize(), article = it) {
                     navController.navigateUp()
                 }
