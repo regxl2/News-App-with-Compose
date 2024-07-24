@@ -19,7 +19,7 @@ import com.example.news.presentation.rootnavgraph.Route
 import com.google.gson.Gson
 
 @Composable
-fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostController) {
+fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostController, showSnackBar: (actionPerformed: ()-> Unit)-> Unit) {
     NavHost(
         navController = navController,
         startDestination = Route.NewsNavigation.NewsScreen.name
@@ -72,7 +72,13 @@ fun NewsNavigationNavGraph(paddingValues: PaddingValues, navController: NavHostC
             }) {
             BookmarkScreen(modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize())
+                .fillMaxSize(),
+                showSnackBar = showSnackBar
+            ){
+                article ->
+                val encodedArticle = Uri.encode(Gson().toJson(article))
+                navController.navigate(route = "${Route.NewsNavigation.DetailScreen}/${encodedArticle}")
+            }
         }
     }
 }

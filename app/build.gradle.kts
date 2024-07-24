@@ -78,6 +78,7 @@ dependencies {
 
     // Dagger Hilt
     implementation (libs.hilt.android)
+    implementation(libs.androidx.ui.text.google.fonts)
     kapt (libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -105,6 +106,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

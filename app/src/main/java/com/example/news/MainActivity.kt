@@ -1,16 +1,18 @@
 package com.example.news
 
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.compose.NewsTheme
 import com.example.news.presentation.rootnavgraph.NavGraph
-import com.example.news.ui.theme.NewsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,10 +29,25 @@ class MainActivity : ComponentActivity() {
         actionBar?.hide()
         setContent {
             NewsTheme {
-                Box(modifier = Modifier.fillMaxSize()){
-                    NavGraph(startDestination = viewModel.startDestination)
-                }
+                NavGraph(startDestination = viewModel.startDestination)
             }
         }
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                showNoInternetToast()
+            }
+        }
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build()
+        val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        connectivityManager.requestNetwork(networkRequest, networkCallback)
+    }
+
+    private fun showNoInternetToast(){
+        Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG).show()
     }
 }

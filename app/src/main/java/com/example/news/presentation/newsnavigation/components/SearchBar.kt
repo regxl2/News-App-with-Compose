@@ -12,12 +12,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -26,21 +30,23 @@ fun SearchBar(modifier: Modifier = Modifier, query: String, onQueryChange: (valu
     BasicTextField(
         modifier = modifier
             .padding(8.dp),
-        value = query,
+        value = TextFieldValue(text = query, selection = TextRange(query.length)),
         singleLine = true,
-        onValueChange = onQueryChange,
+        textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+        onValueChange = { onQueryChange(it.text)},
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = {
             focusManager.clearFocus()
             this.defaultKeyboardAction(ImeAction.Done)
-        })
+        }),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground)
     ) { innerTextField ->
         Row(
             modifier = Modifier
                 .border(
                     width = 2.dp,
                     shape = RoundedCornerShape(16.dp),
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.primaryContainer
                 )
                 .padding(8.dp)
                 .fillMaxWidth(),

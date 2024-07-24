@@ -1,3 +1,5 @@
+import android.content.Context
+import android.content.Intent
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,10 +33,11 @@ import kotlinx.coroutines.launch
 fun DetailScreen(modifier: Modifier = Modifier, article: SavedArticle , viewModel: DetailScreenViewModel = hiltViewModel(),  navigateUp: ()-> Unit) {
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember{ SnackbarHostState() }
+    val context = LocalContext.current
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            DetailTopBar(modifier = Modifier.fillMaxWidth(), navigateUp = navigateUp){
+            DetailTopBar(modifier = Modifier.fillMaxWidth(), url = article.url, title = article.title, context = context, navigateUp = navigateUp){
                 viewModel.saveArticle(article)
                 scope.launch {
                     snackBarHostState.showSnackbar("Article saved successfully")
@@ -52,7 +56,7 @@ fun DetailScreen(modifier: Modifier = Modifier, article: SavedArticle , viewMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailTopBar(modifier: Modifier = Modifier, navigateUp: () -> Unit, onClickSaveArticle: ()-> Unit) {
+fun DetailTopBar(modifier: Modifier = Modifier, title: String,  url: String, context: Context,  navigateUp: () -> Unit, onClickSaveArticle: ()-> Unit) {
     TopAppBar(
         modifier = modifier,
         title = {  },
@@ -68,7 +72,15 @@ fun DetailTopBar(modifier: Modifier = Modifier, navigateUp: () -> Unit, onClickS
             IconButton(onClick = onClickSaveArticle) {
                 Icon(imageVector = Icons.Outlined.Star, contentDescription = "save button")
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                val sendIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, url)
+                    putExtra(Intent.EXTRA_TITLE, title)
+                    type = "text/plain"
+                }
+                context.startActivity(sendIntent)
+            }) {
                 Icon(imageVector = Icons.Default.Share, contentDescription = "share button")
             }
         }

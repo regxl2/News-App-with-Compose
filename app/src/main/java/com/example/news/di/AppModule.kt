@@ -2,6 +2,10 @@ package com.example.news.di
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.news.data.database.NewsDao
@@ -13,6 +17,7 @@ import com.example.news.util.Util
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
