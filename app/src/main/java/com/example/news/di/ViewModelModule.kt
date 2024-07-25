@@ -1,7 +1,9 @@
 package com.example.news.di
 
+import android.content.Context
 import com.example.news.data.database.NewsDao
 import com.example.news.data.remote.NewsApi
+import com.example.news.data.repositories.connectivityManager.ConnectivityRepository
 import com.example.news.data.repositories.newsrepository.NewsRepository
 import com.example.news.data.repositories.newsrepository.NewsRepositoryImpl
 import com.example.news.data.repositories.savednewsrepository.SavedNewsRepository
@@ -10,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 
 
@@ -27,5 +30,11 @@ class ViewModelModule {
     @Provides
     fun getSavedNewsRepository(newsDao: NewsDao): SavedNewsRepository{
         return SavedNewsRepositoryImpl(newsDao)
+    }
+
+    @ViewModelScoped
+    @Provides
+    fun getConnectivityRepository(@ApplicationContext context: Context): ConnectivityRepository{
+        return ConnectivityRepository(context = context)
     }
 }

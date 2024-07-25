@@ -8,7 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.news.data.model.SavedArticle
 import com.example.news.presentation.newsnavigation.components.ArticleCard
-import com.example.news.presentation.newsnavigation.components.handleErrorAndLoading
+import com.example.news.presentation.newsnavigation.components.handleErrorAndLoadingNewsScreen
 
 
 @Composable
@@ -27,7 +27,7 @@ fun NewsScreen(
                 )
             }
         }
-        handleErrorAndLoading(articles = articles)
+        handleErrorAndLoadingNewsScreen(articles = articles)
     }
 }
 

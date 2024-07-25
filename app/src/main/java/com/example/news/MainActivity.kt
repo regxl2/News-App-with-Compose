@@ -1,9 +1,5 @@
 package com.example.news
 
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -11,9 +7,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.compose.NewsTheme
 import com.example.news.presentation.rootnavgraph.NavGraph
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -32,22 +32,17 @@ class MainActivity : ComponentActivity() {
                 NavGraph(startDestination = viewModel.startDestination)
             }
         }
-        val networkCallback = object : ConnectivityManager.NetworkCallback() {
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                showNoInternetToast()
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.isConnected.collect{
+                    if(it) showConnectivityToast("You're Online")
+                    else showConnectivityToast("No Internet Connection")
+                }
             }
         }
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .build()
-        val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-        connectivityManager.requestNetwork(networkRequest, networkCallback)
     }
 
-    private fun showNoInternetToast(){
-        Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG).show()
+    private fun showConnectivityToast(message: String){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

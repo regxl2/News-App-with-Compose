@@ -15,7 +15,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.news.data.model.SavedArticle
 import com.example.news.presentation.newsnavigation.components.ArticleCard
 import com.example.news.presentation.newsnavigation.components.SearchBar
-import com.example.news.presentation.newsnavigation.components.handleErrorAndLoading
+import com.example.news.presentation.newsnavigation.components.handleErrorAndLoadingNewsScreen
+import com.example.news.presentation.newsnavigation.components.handleErrorAndLoadingSearchScreen
 
 @Composable
 fun SearchScreen(
@@ -38,7 +39,7 @@ fun SearchScreen(
             items(articles.itemCount){ articleIndex ->
                 articles[articleIndex]?.let { article -> ArticleCard(article = article, navigateToDetailScreen = navigateToDetailScreen) }
             }
-            handleErrorAndLoading(articles =   articles)
+            handleErrorAndLoadingSearchScreen(articles =   articles)
         }
     }
 }

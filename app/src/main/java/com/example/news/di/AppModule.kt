@@ -69,5 +69,4 @@ class AppModule {
     fun getNewsDao(newsDatabase: NewsDatabase): NewsDao{
         return newsDatabase.getNewsDao()
     }
-
 }
