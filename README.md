@@ -6,9 +6,10 @@ This is a simple News App built using Jetpack Compose. The app fetches news arti
 ## Features
 
 - Latest news articles
-- Category-based news filtering
 - Search functionality
+- Save news articles 
 - Clean and responsive UI with Jetpack Compose
+- Paging 3 and Room Database
 
 ## Screenshots
 <span><image src="images/onBoarding1.png" width = 108px height = 240px/> 
